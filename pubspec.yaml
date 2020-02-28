@@ -36,4 +36,4 @@ flutter:
         fonts:
           - asset: assets/fonts/Signatra.ttf
     assets:
-      - /Users/andre/AndroidStudioProjects/peach/assets/images
+      - assets/images/
