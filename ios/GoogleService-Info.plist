@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>396932291844-0q2vf8i8a5m4vsjuarjjil17cdqo8536.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.396932291844-0q2vf8i8a5m4vsjuarjjil17cdqo8536</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCLnmsprwXMEp57P59EWrNw5W9J2gzinGk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>396932291844</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>peach.getsynced.app</string>
+	<key>PROJECT_ID</key>
+	<string>peach-8b265</string>
+	<key>STORAGE_BUCKET</key>
+	<string>peach-8b265.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:396932291844:ios:7e5757404db3c72d3a0451</string>
+	<key>DATABASE_URL</key>
+	<string>https://peach-8b265.firebaseio.com</string>
+</dict>
+</plist>

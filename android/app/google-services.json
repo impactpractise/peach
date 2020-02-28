@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "396932291844",
+    "firebase_url": "https://peach-8b265.firebaseio.com",
+    "project_id": "peach-8b265",
+    "storage_bucket": "peach-8b265.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396932291844:android:e6a13febb42195123a0451",
+        "android_client_info": {
+          "package_name": "peach.getsynced.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "396932291844-22vd9kftbbioifs1dfmf4n29meiifpoe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "peach.getsynced.app",
+            "certificate_hash": "3ccb74571c4f18e36575694b04c3bcc12bb0c3dd"
+          }
+        },
+        {
+          "client_id": "396932291844-65q4sejkk6j5u0voqlqn07b284j6p1gl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwiG25L5-_moxGuslFDwkxoYPTUQkm5Bo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "396932291844-65q4sejkk6j5u0voqlqn07b284j6p1gl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "396932291844-0q2vf8i8a5m4vsjuarjjil17cdqo8536.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "peach.getsynced.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
