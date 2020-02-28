@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
     }, onError: (err) {
       print('Error signin in: $err');
     });
-    // Reauthenticate user when app is opened
+    // Re-authenticate user when app is opened
     googleSignIn.signInSilently(suppressErrors: false).then((account) {
       handleSignIn(account);
     }).catchError((err) {
