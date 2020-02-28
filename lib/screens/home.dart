@@ -17,8 +17,8 @@ class _HomeState extends State<Home> {
       body: Container(
         decoration: BoxDecoration(
             gradient: RadialGradient(radius: 1.1, colors: [
-          Color(0xFFFF2660),
-          Color(0xFFFA6900),
+          Theme.of(context).accentColor,
+          Theme.of(context).primaryColor,
           Color(0xFFFF9040)
         ], stops: [
           0.2,

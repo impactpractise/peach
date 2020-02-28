@@ -11,6 +11,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Peach',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Color(0xFFFA6900),
+        accentColor: Color(0xFFFF2660),
+      ),
       home: Home(),
     );
   }
