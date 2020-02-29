@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peach/widgets/header.dart';
 
 class Explore extends StatefulWidget {
   @override
@@ -8,6 +9,7 @@ class Explore extends StatefulWidget {
 class _ExploreState extends State<Explore> {
   @override
   Widget build(BuildContext context) {
-    return Text('Explore');
+    return Scaffold(
+        appBar: header(context, isAppTitle: true), body: Text('Explore'));
   }
 }
