@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peach/widgets/header.dart';
+import 'package:peach/widgets/loading.dart';
 
 class Explore extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class _ExploreState extends State<Explore> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: header(context, isAppTitle: true), body: Text('Explore'));
+        appBar: header(context, isAppTitle: true),
+        body: circularLoading(context));
   }
 }

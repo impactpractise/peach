@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peach/widgets/header.dart';
+import 'package:peach/widgets/loading.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -9,6 +10,9 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: header(context, titleText: 'Profile'));
+    return Scaffold(
+      appBar: header(context, titleText: 'Profile'),
+      body: linearProgress(context),
+    );
   }
 }

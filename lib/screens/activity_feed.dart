@@ -7,6 +7,9 @@ class ActivityFeed extends StatefulWidget {
 
 class _ActivityFeedState extends State<ActivityFeed> {
   @override
+  void initState(){
+    getUsers
+  }
   Widget build(BuildContext context) {
     return Text('Activity Feed');
   }
