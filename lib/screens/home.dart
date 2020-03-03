@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:peach/models/user.dart';
 import 'package:peach/screens/activity_feed.dart';
-import 'package:peach/screens/explore.dart';
 import 'package:peach/screens/profile.dart';
 import 'package:peach/screens/search.dart';
 import 'package:peach/screens/upload.dart';
@@ -13,6 +13,7 @@ import 'create_account.dart';
 final GoogleSignIn googleSignIn = GoogleSignIn();
 final usersRef = Firestore.instance.collection('users');
 final DateTime timestamp = DateTime.now();
+User currentUser;
 
 class Home extends StatefulWidget {
   @override
@@ -59,7 +60,7 @@ class _HomeState extends State<Home> {
   createUserInForestore() async {
     // 1. Check if user  exists users collection
     final GoogleSignInAccount user = googleSignIn.currentUser;
-    final DocumentSnapshot doc = await usersRef.document(user.id).get();
+    DocumentSnapshot doc = await usersRef.document(user.id).get();
 
     // 2. If user does not exist, we navigate to create account page
     if (!doc.exists) {
@@ -76,7 +77,11 @@ class _HomeState extends State<Home> {
         "bio": "",
         "timestamp": timestamp
       });
+      doc = await usersRef.document(user.id).get();
     }
+    currentUser = User.fromDocument(doc);
+    print(currentUser);
+    print(currentUser.username);
   }
 
   @override
@@ -109,7 +114,10 @@ class _HomeState extends State<Home> {
         body: PageView(
           children: <Widget>[
             //Explore(),
-            RaisedButton(child: Text('Logout'), onPressed: logout,),
+            RaisedButton(
+              child: Text('Logout'),
+              onPressed: logout,
+            ),
             ActivityFeed(),
             Upload(),
             Search(),
