@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:peach/widgets/header.dart';
@@ -8,18 +10,28 @@ class CreateAccount extends StatefulWidget {
 }
 
 class _CreateAccountState extends State<CreateAccount> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   String username;
 
-//  submit() {
-//    _formKey.currentState.save();
-//    Navigator.pop(context, username);
-//  }
+  submit() {
+    final form = _formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      SnackBar snackbar = SnackBar(content: Text("Welcome $username!"));
+      _scaffoldKey.currentState.showSnackBar(snackbar);
+      Timer(Duration(seconds: 2), () {
+        Navigator.pop(context, username);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: header(context, titleText: 'Setup your profile'),
+      key: _scaffoldKey,
+      appBar: header(context,
+          titleText: 'Setup your profile', removeBackButton: true),
       body: Padding(
         padding: const EdgeInsets.only(left: 16.0, right: 16),
         child: ListView(children: <Widget>[
@@ -36,7 +48,17 @@ class _CreateAccountState extends State<CreateAccount> {
               children: <Widget>[
                 Form(
                   key: _formKey,
+                  autovalidate: true,
                   child: TextFormField(
+                    validator: (userInput) {
+                      if (userInput.trim().length < 3 || userInput.isEmpty) {
+                        return 'Username too short';
+                      } else if (userInput.trim().length > 15) {
+                        return 'Username too long';
+                      } else {
+                        return null;
+                      }
+                    },
                     onSaved: (userInput) => username = userInput,
                     decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
@@ -56,10 +78,7 @@ class _CreateAccountState extends State<CreateAccount> {
           Padding(
             padding: const EdgeInsets.only(top: 50.0),
             child: GestureDetector(
-              onTap: () {
-                _formKey.currentState.save();
-                Navigator.pop(context, username);
-              },
+              onTap: submit,
               child: Container(
                 height: 60,
                 width: double.infinity,
