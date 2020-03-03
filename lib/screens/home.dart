@@ -130,7 +130,7 @@ class _HomeState extends State<Home> {
         bottomNavigationBar: CupertinoTabBar(
           currentIndex: pageIndex,
           onTap: onTap,
-          activeColor: Theme.of(context).accentColor,
+          activeColor: Theme.of(context).primaryColor,
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home)),
             BottomNavigationBarItem(icon: Icon(Icons.notifications_active)),
@@ -146,8 +146,8 @@ class _HomeState extends State<Home> {
       body: Container(
         decoration: BoxDecoration(
             gradient: RadialGradient(radius: 1.1, colors: [
-          Theme.of(context).accentColor,
           Theme.of(context).primaryColor,
+          Theme.of(context).accentColor,
           Color(0xFFFF9040)
         ], stops: [
           0.2,

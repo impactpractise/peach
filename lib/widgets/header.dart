@@ -8,7 +8,7 @@ AppBar header(context,
       title: Text(
         isAppTitle ? 'Peach' : titleText,
         style: TextStyle(
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
             fontFamily: isAppTitle ? "Signatra" : "",
             fontSize: isAppTitle ? 50.0 : 22),
       ));
