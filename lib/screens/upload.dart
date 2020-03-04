@@ -3,8 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:peach/models/user.dart';
 
 class Upload extends StatefulWidget {
+  final User currentUser;
+  Upload({this.currentUser});
+
   @override
   _UploadState createState() => _UploadState();
 }
@@ -15,7 +19,10 @@ class _UploadState extends State<Upload> {
   handleTakePhoto() async {
     Navigator.pop(context);
     File file = await ImagePicker.pickImage(
-        source: ImageSource.camera, maxHeight: 675, maxWidth: 970);
+      source: ImageSource.camera,
+      maxHeight: 675,
+      maxWidth: 960,
+    );
     setState(() {
       this.file = file;
     });
@@ -70,8 +77,37 @@ class _UploadState extends State<Upload> {
     );
   }
 
-  buildUploadForm() {
-    return Text('File loaded');
+  clearImage() {
+    setState(() {
+      file = null;
+    });
+  }
+
+  Scaffold buildUploadForm() {
+    return Scaffold(
+      appBar: AppBar(
+          backgroundColor: Colors.white,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: clearImage,
+          ),
+          title: Text(
+            'Caption Post',
+            style: TextStyle(color: Colors.black),
+          ),
+          actions: [
+            FlatButton(
+              onPressed: () => print('pressed'),
+              child: Text(
+                'Post',
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
+            )
+          ]),
+    );
   }
 
   @override
