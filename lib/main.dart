@@ -12,8 +12,8 @@ class MyApp extends StatelessWidget {
       title: 'Peach',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Color(0xFFFA6900),
-        accentColor: Color(0xFFFF2660),
+        primaryColor: Color(0xFFFA2660),
+        accentColor: Color(0xFFFA6900),
       ),
       home: Home(),
     );

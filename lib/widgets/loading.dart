@@ -5,7 +5,7 @@ Container circularLoading(context) {
     alignment: Alignment.center,
     padding: EdgeInsets.only(top: 10.0),
     child: CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation(Theme.of(context).accentColor),
+      valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor),
     ),
   );
 }
@@ -16,7 +16,7 @@ Container linearProgress(context) {
     child: LinearProgressIndicator(
       backgroundColor: Colors.white,
       valueColor: AlwaysStoppedAnimation(
-        Theme.of(context).accentColor,
+        Theme.of(context).primaryColor,
       ),
     ),
   );
