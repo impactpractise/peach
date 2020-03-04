@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
       title: 'Peach',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Color(0xFFFA2660),
-        accentColor: Color(0xFFFA6900),
-      ),
+          primaryColor: Color(0xFFFF2660),
+          accentColor: Color(0xFFFA6900),
+          secondaryHeaderColor: Color(0xFF41EAD4)),
       home: Home(),
     );
   }
