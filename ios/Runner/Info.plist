@@ -38,11 +38,13 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To upload images from your gallery, we need your permission to access your gallery.</string>
+	<string>With your permission you upload images from your gallery.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>To take an image, we need your permission to access your camera.</string>
+	<string>With your permission you can upload images from your camera.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>To take a video, we need your permission to access your microphone.</string>
+	<string>With your permission you can take videos with access your microphone.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>With your permission you can get your current location.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
