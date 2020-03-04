@@ -78,7 +78,7 @@ class _SearchState extends State<Search> {
         future: searchResultsFuture,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return circularLoading(context);
+            return circularProgress(context);
           }
           List<UserResult> searchResults = [];
           snapshot.data.documents.forEach((doc) {

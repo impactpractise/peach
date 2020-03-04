@@ -47,7 +47,7 @@ class _ExploreState extends State<Explore> {
             stream: usersRef.snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return circularLoading(context);
+                return circularProgress(context);
               }
               final List<Text> children = snapshot.data.documents
                   .map((doc) => Text(doc['username']))

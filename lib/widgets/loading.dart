@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Container circularLoading(context) {
+Container circularProgress(context) {
   return Container(
     alignment: Alignment.center,
     padding: EdgeInsets.only(top: 10.0),
