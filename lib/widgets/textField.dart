@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 
-class textField extends StatelessWidget {
+class ReuseableTextFormField extends StatelessWidget {
   final TextEditingController controller;
   final String title;
   final String label;
+  final String errText;
+  final bool isValid;
 
-  textField({this.controller, @required this.title, @required this.label});
+  ReuseableTextFormField(
+      {this.controller,
+      @required this.title,
+      @required this.label,
+      this.isValid: true,
+      this.errText});
 
   @override
   Column build(BuildContext context) {
@@ -21,9 +28,9 @@ class textField extends StatelessWidget {
           ),
         ),
         TextField(
-          controller: controller,
-          decoration: InputDecoration(hintText: label),
-        ),
+            controller: controller,
+            decoration: InputDecoration(
+                hintText: label, errorText: isValid ? null : errText)),
       ],
     );
   }

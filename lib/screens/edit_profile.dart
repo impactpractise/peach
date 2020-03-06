@@ -2,7 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peach/models/user.dart';
-import 'package:peach/screens/explore.dart';
+import 'package:peach/screens/home.dart';
+import 'package:peach/screens/profile.dart';
 import 'package:peach/widgets/loading.dart';
 import 'package:peach/widgets/textField.dart';
 
@@ -15,6 +16,8 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   TextEditingController nameController = TextEditingController();
   TextEditingController bioController = TextEditingController();
   TextEditingController instagramController = TextEditingController();
@@ -22,6 +25,8 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController youtubeController = TextEditingController();
   TextEditingController websiteController = TextEditingController();
 
+  bool _nameValid = true;
+  bool _bioValid = true;
   bool isLoading = false;
   User user;
 
@@ -39,15 +44,48 @@ class _EditProfileState extends State<EditProfile> {
     user = User.fromDocument(doc);
     nameController.text = user.name;
     bioController.text = user.bio;
-    instagramController.text = user.instagramName;
-    tiktokController.text = user.tiktokName;
+    instagramController.text = user.instagram;
+    tiktokController.text = user.tiktok;
+    youtubeController.text = user.youtube;
+
     setState(() {
       isLoading = false;
     });
   }
 
+  updateProfileData() async {
+    setState(() {
+      nameController.text.trim().length < 3 || nameController.text.isEmpty
+          ? _nameValid = false
+          : _nameValid = true;
+      bioController.text.trim().length > 140
+          ? _bioValid = false
+          : _bioValid = true;
+    });
+
+    if (_nameValid && _bioValid) {
+      usersRef.document(widget.currentUserId).updateData({
+        "displayName": nameController.text,
+        "bio": bioController.text,
+        "instagram": instagramController.text,
+        "tiktok": tiktokController.text,
+        "youtube": youtubeController.text,
+        "website": websiteController.text
+      });
+      SnackBar snackbar = SnackBar(content: Text("Success, profile updated"));
+      _scaffoldKey.currentState.showSnackBar(snackbar);
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Profile(
+                    profileId: currentUser.id,
+                  )));
+    }
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -58,7 +96,7 @@ class _EditProfileState extends State<EditProfile> {
         ),
         actions: <Widget>[
           IconButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(context, getUser),
               icon: Icon(
                 Icons.done,
                 size: 30,
@@ -85,27 +123,32 @@ class _EditProfileState extends State<EditProfile> {
                         padding: EdgeInsets.all(16),
                         child: Column(
                           children: <Widget>[
-                            textField(
+                            ReuseableTextFormField(
                                 controller: nameController,
                                 title: 'Name',
-                                label: 'Tell the world about you'),
-                            textField(
+                                label: 'Tell the world about you',
+                                isValid: _nameValid,
+                                errText: 'Entered name is too short.'),
+                            ReuseableTextFormField(
                                 controller: bioController,
                                 title: 'Bio',
-                                label: 'Tell the world about you'),
-                            textField(
+                                label: 'Tell the world about you',
+                                isValid: _bioValid,
+                                errText:
+                                    'Please enter a bio shorter than 140 characters.'),
+                            ReuseableTextFormField(
                                 controller: instagramController,
                                 title: 'Instagram',
                                 label: '@username'),
-                            textField(
+                            ReuseableTextFormField(
                                 controller: tiktokController,
                                 title: 'TikTok',
                                 label: 'username'),
-                            textField(
+                            ReuseableTextFormField(
                                 controller: youtubeController,
                                 title: 'Youtube',
                                 label: '/Channel or URL'),
-                            textField(
+                            ReuseableTextFormField(
                                 controller: websiteController,
                                 title: 'Website',
                                 label: 'www.peach.com'),
@@ -114,7 +157,7 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       RaisedButton(
                         color: Theme.of(context).secondaryHeaderColor,
-                        onPressed: () => print('update profile data'),
+                        onPressed: updateProfileData,
                         child: Text(
                           'Update Profile',
                           style: TextStyle(
@@ -127,7 +170,11 @@ class _EditProfileState extends State<EditProfile> {
                         padding: EdgeInsets.all(16),
                         child: FlatButton.icon(
                           onPressed: () => print('logout'),
-                          icon: Icon(Icons.cancel, color: Colors.black),
+                          icon: Icon(
+                            Icons.cancel,
+                            color: Colors.black,
+                            size: 12,
+                          ),
                           label: Text('Logout',
                               style:
                                   TextStyle(color: Colors.black, fontSize: 12)),

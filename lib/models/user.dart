@@ -7,18 +7,20 @@ class User {
   final String email;
   final String bio;
   final String photoUrl;
-  final String instagramName;
-  final String tiktokName;
+  final String instagram;
+  final String tiktok;
+  final String youtube;
 
   User(
       {this.id,
       this.username,
       this.name,
-      this.instagramName,
-      this.tiktokName,
+      this.instagram,
+      this.tiktok,
       this.email,
       this.bio,
-      this.photoUrl});
+      this.photoUrl,
+      this.youtube});
 
   factory User.fromDocument(DocumentSnapshot doc) {
     return User(
@@ -28,7 +30,8 @@ class User {
         photoUrl: doc['photoUrl'],
         bio: doc['bio'],
         name: doc['displayName'],
-        instagramName: doc['instagramName'],
-        tiktokName: doc['tiktokName']);
+        instagram: doc['instagram'],
+        tiktok: doc['tiktok'],
+        youtube: doc['youtube']);
   }
 }

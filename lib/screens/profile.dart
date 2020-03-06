@@ -93,7 +93,7 @@ class _ProfileState extends State<Profile> {
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text('Changing peoples lifes.'),
+              child: Text(user.bio),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
