@@ -117,7 +117,7 @@ class UserResult extends StatelessWidget {
                 backgroundImage: CachedNetworkImageProvider(user.photoUrl),
               ),
               title: Text(
-                user.displayName,
+                user.name,
                 style: TextStyle(
                   color: Color(0xFFFF2660),
                   fontWeight: FontWeight.bold,

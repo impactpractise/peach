@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:peach/models/user.dart';
 import 'package:peach/screens/explore.dart';
 import 'package:peach/widgets/loading.dart';
+import 'package:peach/widgets/textField.dart';
 
 class EditProfile extends StatefulWidget {
   final String currentUserId;
@@ -14,8 +15,12 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  TextEditingController displayNameController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
   TextEditingController bioController = TextEditingController();
+  TextEditingController instagramController = TextEditingController();
+  TextEditingController tiktokController = TextEditingController();
+  TextEditingController youtubeController = TextEditingController();
+  TextEditingController websiteController = TextEditingController();
 
   bool isLoading = false;
   User user;
@@ -32,49 +37,13 @@ class _EditProfileState extends State<EditProfile> {
     });
     DocumentSnapshot doc = await usersRef.document(widget.currentUserId).get();
     user = User.fromDocument(doc);
-    displayNameController.text = user.displayName;
+    nameController.text = user.name;
     bioController.text = user.bio;
+    instagramController.text = user.instagramName;
+    tiktokController.text = user.tiktokName;
     setState(() {
       isLoading = false;
     });
-  }
-
-  Column buildDisplayNameField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(top: 12),
-          child: Text(
-            'Display name',
-            style: TextStyle(color: Colors.grey),
-          ),
-        ),
-        TextField(
-          controller: displayNameController,
-          decoration: InputDecoration(hintText: "Update display name"),
-        ),
-      ],
-    );
-  }
-
-  Column buildBioField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(top: 12),
-          child: Text(
-            'Display name',
-            style: TextStyle(color: Colors.grey),
-          ),
-        ),
-        TextField(
-          controller: bioController,
-          decoration: InputDecoration(hintText: "Update Bio"),
-        ),
-      ],
-    );
   }
 
   Widget build(BuildContext context) {
@@ -84,7 +53,7 @@ class _EditProfileState extends State<EditProfile> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          "Edit Profile",
+          "Edit Your Profile",
           style: TextStyle(color: Colors.black),
         ),
         actions: <Widget>[
@@ -107,6 +76,7 @@ class _EditProfileState extends State<EditProfile> {
                       Padding(
                         padding: EdgeInsets.only(top: 16, bottom: 8),
                         child: CircleAvatar(
+                          radius: 40,
                           backgroundImage:
                               CachedNetworkImageProvider(user.photoUrl),
                         ),
@@ -115,17 +85,40 @@ class _EditProfileState extends State<EditProfile> {
                         padding: EdgeInsets.all(16),
                         child: Column(
                           children: <Widget>[
-                            buildDisplayNameField(),
-                            buildBioField(),
+                            textField(
+                                controller: nameController,
+                                title: 'Name',
+                                label: 'Tell the world about you'),
+                            textField(
+                                controller: bioController,
+                                title: 'Bio',
+                                label: 'Tell the world about you'),
+                            textField(
+                                controller: instagramController,
+                                title: 'Instagram',
+                                label: '@username'),
+                            textField(
+                                controller: tiktokController,
+                                title: 'TikTok',
+                                label: 'username'),
+                            textField(
+                                controller: youtubeController,
+                                title: 'Youtube',
+                                label: '/Channel or URL'),
+                            textField(
+                                controller: websiteController,
+                                title: 'Website',
+                                label: 'www.peach.com'),
                           ],
                         ),
                       ),
                       RaisedButton(
+                        color: Theme.of(context).secondaryHeaderColor,
                         onPressed: () => print('update profile data'),
                         child: Text(
                           'Update Profile',
                           style: TextStyle(
-                              color: Theme.of(context).primaryColor,
+                              color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                         ),
