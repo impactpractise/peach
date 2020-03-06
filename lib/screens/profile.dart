@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:peach/models/user.dart';
+import 'package:peach/screens/edit_profile.dart';
 import 'package:peach/screens/home.dart';
 import 'package:peach/widgets/header.dart';
 import 'package:peach/widgets/loading.dart';
@@ -14,6 +15,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final String currentUserId = currentUser?.id;
   Column buildCountColumn(String label, int count) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -35,8 +37,43 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  editProfile() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditProfile(currentUserId: currentUserId)));
+  }
+
+  Container buildButton({String text, Function function}) {
+    return Container(
+      padding: EdgeInsets.only(top: 2),
+      child: FlatButton(
+        onPressed: function,
+        child: Container(
+          child: Text(
+            text,
+            style: TextStyle(
+                color: Theme.of(context).secondaryHeaderColor,
+                fontWeight: FontWeight.bold),
+          ),
+          width: double.infinity,
+          height: 30,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Theme.of(context).secondaryHeaderColor),
+              borderRadius: BorderRadius.circular(5)),
+        ),
+      ),
+    );
+  }
+
   buildProfileButton() {
-    return Text('Profile Button');
+    // is this my own Profile? Then show edit profile button
+    bool isProfileOwner = currentUserId == widget.profileId;
+    if (isProfileOwner) {
+      return buildButton(text: 'Edit Profile', function: editProfile);
+    }
   }
 
   buildProfileHeader() {
@@ -47,60 +84,27 @@ class _ProfileState extends State<Profile> {
           return circularProgress(context);
         }
         User user = User.fromDocument(snapshot.data);
-        return Padding(
-          padding: EdgeInsets.only(left: 16, right: 16),
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  CircleAvatar(
-                    radius: 50.0,
-                    backgroundColor: Colors.blueGrey.shade200,
-                    backgroundImage: CachedNetworkImageProvider(user.photoUrl),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          user.username,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 22.0,
-                          ),
-                        ),
-                        Text(
-                          user.displayName,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text('Lalalalalla'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      buildCountColumn('Posts', 0),
-                      buildCountColumn('Followers', 0),
-                      buildCountColumn('Following', 0),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[buildProfileButton()],
-                  )
-                ],
-              )
-            ],
-          ),
+        return Column(
+          children: <Widget>[
+            CircleAvatar(
+              radius: 50.0,
+              backgroundColor: Colors.blueGrey.shade200,
+              backgroundImage: CachedNetworkImageProvider(user.photoUrl),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text('Changing peoples lifes.'),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                buildCountColumn('Posts', 0),
+                buildCountColumn('Followers', 0),
+                buildCountColumn('Following', 0),
+              ],
+            ),
+            buildProfileButton()
+          ],
         );
       },
     );
@@ -110,8 +114,11 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: header(context,
-          titleText: currentUser.username, iconData: Icon(Icons.arrow_back)),
+      appBar: header(
+        context,
+        titleText: currentUser.username,
+        removeBackButton: false,
+      ),
       body: ListView(children: <Widget>[buildProfileHeader()]),
     );
   }

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-AppBar header(context,
-    {bool isAppTitle = false,
-    String titleText,
-    removeBackButton = false,
-    bool isIconData = false,
-    iconData}) {
+AppBar header(
+  context, {
+  bool isAppTitle = false,
+  String titleText,
+  removeBackButton = false,
+}) {
   return AppBar(
       automaticallyImplyLeading: removeBackButton ? false : true,
       backgroundColor: Colors.transparent,
       elevation: 0,
-      actions: <Widget>[isIconData ? iconData : null],
       title: Text(
         isAppTitle ? 'Peach' : titleText,
         style: TextStyle(
