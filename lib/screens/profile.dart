@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:peach/models/user.dart';
 import 'package:peach/screens/edit_profile.dart';
 import 'package:peach/screens/home.dart';
@@ -143,6 +144,22 @@ class _ProfileState extends State<Profile> {
   buildProfilePosts() {
     if (isLoading) {
       return circularProgress(context);
+    } else if (posts.isEmpty) {
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SvgPicture.asset('assets/images/no_content.svg', height: 260),
+            Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: Text(
+                  'No posts yet..',
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 25),
+                )),
+          ],
+        ),
+      );
     } else if (profileToggleBar == 'grid') {
       List<GridTile> gridTiles = [];
       posts.forEach((post) {
