@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peach/models/user.dart';
 import 'package:peach/screens/edit_profile.dart';
 import 'package:peach/screens/home.dart';
 import 'package:peach/widgets/header.dart';
 import 'package:peach/widgets/loading.dart';
+import 'package:peach/widgets/post.dart';
 
 class Profile extends StatefulWidget {
   final String profileId;
@@ -16,6 +18,32 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final String currentUserId = currentUser?.id;
+  bool isLoading = false;
+  int postCount = 0;
+  List<Post> posts = [];
+
+  @override
+  initState() {
+    super.initState();
+    getProfilePosts();
+  }
+
+  getProfilePosts() async {
+    setState(() {
+      isLoading = true;
+    });
+    QuerySnapshot snapshot = await postsRef
+        .document(widget.profileId)
+        .collection('userPosts')
+        .orderBy('timestamp', descending: true)
+        .getDocuments();
+    setState(() {
+      isLoading = false;
+      postCount = snapshot.documents.length;
+      posts = snapshot.documents.map((doc) => Post.fromDocument(doc)).toList();
+    });
+  }
+
   Column buildCountColumn(String label, int count) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -98,7 +126,7 @@ class _ProfileState extends State<Profile> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                buildCountColumn('Posts', 0),
+                buildCountColumn('Posts', postCount),
                 buildCountColumn('Followers', 0),
                 buildCountColumn('Following', 0),
               ],
@@ -107,6 +135,15 @@ class _ProfileState extends State<Profile> {
           ],
         );
       },
+    );
+  }
+
+  buildProfilePosts() {
+    if (isLoading) {
+      return circularProgress(context);
+    }
+    return Column(
+      children: posts,
     );
   }
 
@@ -119,7 +156,11 @@ class _ProfileState extends State<Profile> {
         titleText: currentUser.username,
         removeBackButton: false,
       ),
-      body: ListView(children: <Widget>[buildProfileHeader()]),
+      body: ListView(children: <Widget>[
+        buildProfileHeader(),
+        Divider(height: 0.0),
+        buildProfilePosts()
+      ]),
     );
   }
 }

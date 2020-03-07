@@ -131,11 +131,12 @@ class _PostState extends State<Post> {
               padding: EdgeInsets.only(top: 40, left: 20),
             ),
             GestureDetector(
+                onTap: () => print('has liked'),
                 child: Icon(
-              Icons.favorite_border,
-              size: 28,
-              color: Theme.of(context).primaryColor,
-            )),
+                  Icons.favorite_border,
+                  size: 28,
+                  color: Theme.of(context).primaryColor,
+                )),
             Padding(padding: EdgeInsets.only(right: 20)),
             GestureDetector(
                 onTap: () => print('show comments'),
@@ -159,7 +160,7 @@ class _PostState extends State<Post> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(left: 20),
+              margin: EdgeInsets.only(left: 20, right: 5),
               child: Text(
                 '$username',
                 style: TextStyle(
