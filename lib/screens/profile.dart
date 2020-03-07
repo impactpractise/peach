@@ -1,10 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:peach/models/user.dart';
 import 'package:peach/screens/edit_profile.dart';
 import 'package:peach/screens/home.dart';
 import 'package:peach/widgets/header.dart';
 import 'package:peach/widgets/loading.dart';
+import 'package:peach/widgets/post.dart';
+import 'package:peach/widgets/post_tile.dart';
 
 class Profile extends StatefulWidget {
   final String profileId;
@@ -15,7 +19,34 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String profileToggleBar = 'grid';
   final String currentUserId = currentUser?.id;
+  bool isLoading = false;
+  int postCount = 0;
+  List<Post> posts = [];
+
+  @override
+  initState() {
+    super.initState();
+    getProfilePosts();
+  }
+
+  getProfilePosts() async {
+    setState(() {
+      isLoading = true;
+    });
+    QuerySnapshot snapshot = await postsRef
+        .document(widget.profileId)
+        .collection('userPosts')
+        .orderBy('timestamp', descending: true)
+        .getDocuments();
+    setState(() {
+      isLoading = false;
+      postCount = snapshot.documents.length;
+      posts = snapshot.documents.map((doc) => Post.fromDocument(doc)).toList();
+    });
+  }
+
   Column buildCountColumn(String label, int count) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -98,7 +129,7 @@ class _ProfileState extends State<Profile> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                buildCountColumn('Posts', 0),
+                buildCountColumn('Posts', postCount),
                 buildCountColumn('Followers', 0),
                 buildCountColumn('Following', 0),
               ],
@@ -107,6 +138,76 @@ class _ProfileState extends State<Profile> {
           ],
         );
       },
+    );
+  }
+
+  buildProfilePosts() {
+    if (isLoading) {
+      return circularProgress(context);
+    } else if (posts.isEmpty) {
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SvgPicture.asset('assets/images/no_content.svg', height: 260),
+            Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: Text(
+                  'No posts yet..',
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 25),
+                )),
+          ],
+        ),
+      );
+    } else if (profileToggleBar == 'grid') {
+      List<GridTile> gridTiles = [];
+      posts.forEach((post) {
+        gridTiles.add(GridTile(child: PostTile(post)));
+      });
+      return Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+          child: GridView.count(
+            crossAxisCount: 3,
+            childAspectRatio: 1.0,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            children: gridTiles,
+          ));
+    } else if (profileToggleBar == 'list') {
+      return Column(
+        children: posts,
+      );
+    }
+  }
+
+  setProfileToggleBar(String profileToggleBar) {
+    setState(() {
+      this.profileToggleBar = profileToggleBar;
+    });
+  }
+
+  buildProfileToggleBar() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.grid_on),
+          color: profileToggleBar == 'grid'
+              ? Theme.of(context).primaryColor
+              : Colors.blueGrey,
+          onPressed: () => setProfileToggleBar('grid'),
+        ),
+        IconButton(
+          icon: Icon(Icons.list),
+          color: profileToggleBar == 'list'
+              ? Theme.of(context).primaryColor
+              : Colors.blueGrey,
+          onPressed: () => setProfileToggleBar('list'),
+        ),
+      ],
     );
   }
 
@@ -119,7 +220,13 @@ class _ProfileState extends State<Profile> {
         titleText: currentUser.username,
         removeBackButton: false,
       ),
-      body: ListView(children: <Widget>[buildProfileHeader()]),
+      body: ListView(children: <Widget>[
+        buildProfileHeader(),
+        Divider(),
+        buildProfileToggleBar(),
+        Divider(height: 0.0),
+        buildProfilePosts()
+      ]),
     );
   }
 }
