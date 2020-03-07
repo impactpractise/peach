@@ -7,6 +7,7 @@ import 'package:peach/screens/home.dart';
 import 'package:peach/widgets/header.dart';
 import 'package:peach/widgets/loading.dart';
 import 'package:peach/widgets/post.dart';
+import 'package:peach/widgets/post_tile.dart';
 
 class Profile extends StatefulWidget {
   final String profileId;
@@ -17,6 +18,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String profileToggleBar = 'grid';
   final String currentUserId = currentUser?.id;
   bool isLoading = false;
   int postCount = 0;
@@ -141,9 +143,54 @@ class _ProfileState extends State<Profile> {
   buildProfilePosts() {
     if (isLoading) {
       return circularProgress(context);
+    } else if (profileToggleBar == 'grid') {
+      List<GridTile> gridTiles = [];
+      posts.forEach((post) {
+        gridTiles.add(GridTile(child: PostTile(post)));
+      });
+      return Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+          child: GridView.count(
+            crossAxisCount: 3,
+            childAspectRatio: 1.0,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            children: gridTiles,
+          ));
+    } else if (profileToggleBar == 'list') {
+      return Column(
+        children: posts,
+      );
     }
-    return Column(
-      children: posts,
+  }
+
+  setProfileToggleBar(String profileToggleBar) {
+    setState(() {
+      this.profileToggleBar = profileToggleBar;
+    });
+  }
+
+  buildProfileToggleBar() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.grid_on),
+          color: profileToggleBar == 'grid'
+              ? Theme.of(context).primaryColor
+              : Colors.blueGrey,
+          onPressed: () => setProfileToggleBar('grid'),
+        ),
+        IconButton(
+          icon: Icon(Icons.list),
+          color: profileToggleBar == 'list'
+              ? Theme.of(context).primaryColor
+              : Colors.blueGrey,
+          onPressed: () => setProfileToggleBar('list'),
+        ),
+      ],
     );
   }
 
@@ -158,6 +205,8 @@ class _ProfileState extends State<Profile> {
       ),
       body: ListView(children: <Widget>[
         buildProfileHeader(),
+        Divider(),
+        buildProfileToggleBar(),
         Divider(height: 0.0),
         buildProfilePosts()
       ]),
