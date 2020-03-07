@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peach/models/user.dart';
 import 'package:peach/screens/home.dart';
+import 'package:peach/widgets/custom_image.dart';
 import 'package:peach/widgets/loading.dart';
 
 class Post extends StatefulWidget {
@@ -116,7 +117,7 @@ class _PostState extends State<Post> {
       onDoubleTap: () => print('liked post'),
       child: Stack(
         alignment: Alignment.center,
-        children: <Widget>[Image.network(mediaUrl)],
+        children: <Widget>[cachedNetworkImage(mediaUrl)],
       ),
     );
   }
