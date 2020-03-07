@@ -111,9 +111,69 @@ class _PostState extends State<Post> {
     );
   }
 
-  buildPostImage() {}
+  buildPostImage() {
+    return GestureDetector(
+      onDoubleTap: () => print('liked post'),
+      child: Stack(
+        alignment: Alignment.center,
+        children: <Widget>[Image.network(mediaUrl)],
+      ),
+    );
+  }
 
-  buildPostFooter() {}
+  buildPostFooter() {
+    return Column(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: 40, left: 20),
+            ),
+            GestureDetector(
+                child: Icon(
+              Icons.favorite_border,
+              size: 28,
+              color: Theme.of(context).primaryColor,
+            )),
+            Padding(padding: EdgeInsets.only(right: 20)),
+            GestureDetector(
+                onTap: () => print('show comments'),
+                child: Icon(Icons.chat,
+                    size: 28, color: Theme.of(context).secondaryHeaderColor))
+          ],
+        ),
+        Row(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(left: 20),
+              child: Text(
+                '$likesCount likes',
+                style: TextStyle(
+                    color: Colors.black87, fontWeight: FontWeight.bold),
+              ),
+            )
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(left: 20),
+              child: Text(
+                '$username',
+                style: TextStyle(
+                    color: Colors.black87, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Expanded(
+              child: Text(description),
+            )
+          ],
+        )
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
