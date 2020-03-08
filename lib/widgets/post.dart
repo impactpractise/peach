@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +10,14 @@ import 'package:peach/widgets/custom_image.dart';
 import 'package:peach/widgets/loading.dart';
 
 class Post extends StatefulWidget {
+  final String currentUserId = currentUser?.id;
   final String postId;
   final String ownerId;
   final String username;
   final String location;
   final String description;
   final String mediaUrl;
-  final dynamic likes;
+  final dynamic likesCount;
 
   Post(
       {this.postId,
@@ -22,7 +26,7 @@ class Post extends StatefulWidget {
       this.location,
       this.description,
       this.mediaUrl,
-      this.likes});
+      this.likesCount});
 
   factory Post.fromDocument(DocumentSnapshot doc) {
     return Post(
@@ -32,7 +36,7 @@ class Post extends StatefulWidget {
         location: doc['location'],
         description: doc['description'],
         mediaUrl: doc['mediaUrl'],
-        likes: doc['likes']);
+        likesCount: doc['likes']);
   }
 
   int getLikesCount(likes) {
@@ -56,8 +60,8 @@ class Post extends StatefulWidget {
       location: this.location,
       description: this.description,
       mediaUrl: this.mediaUrl,
-      likes: this.likes,
-      likesCount: getLikesCount(this.likes));
+      likes: this.likesCount,
+      likesCount: getLikesCount(this.likesCount));
 }
 
 class _PostState extends State<Post> {
@@ -69,6 +73,8 @@ class _PostState extends State<Post> {
   final String mediaUrl;
   int likesCount;
   Map likes;
+  bool isLiked;
+  bool showHeart = false;
 
   _PostState(
       {this.postId,
@@ -112,12 +118,62 @@ class _PostState extends State<Post> {
     );
   }
 
+  handleLike() {
+    bool _isLiked = likes['currentUserId'] == true;
+    if (_isLiked) {
+      postsRef
+          .document(ownerId)
+          .collection('userPosts')
+          .document(postId)
+          .updateData({'likes.${currentUser.id}': false});
+      setState(() {
+        likesCount--;
+        isLiked = false;
+        likes['currentUserId'] = false;
+      });
+    } else if (!_isLiked) {
+      postsRef
+          .document(ownerId)
+          .collection('userPosts')
+          .document(postId)
+          .updateData({'likes.${currentUser.id}': true});
+      setState(() {
+        likesCount++;
+        isLiked = true;
+        likes['currentUserId'] = true;
+        showHeart = true;
+      });
+      Timer(Duration(milliseconds: 500), () {
+        setState(() {
+          showHeart = false;
+        });
+      });
+    }
+  }
+
   buildPostImage() {
     return GestureDetector(
-      onDoubleTap: () => print('liked post'),
+      onDoubleTap: handleLike,
       child: Stack(
         alignment: Alignment.center,
-        children: <Widget>[cachedNetworkImage(mediaUrl)],
+        children: <Widget>[
+          cachedNetworkImage(mediaUrl),
+          showHeart
+              ? Animator(
+                  duration: Duration(milliseconds: 300),
+                  tween: Tween(begin: 0.8, end: 1.5),
+                  curve: Curves.bounceInOut,
+                  cycles: 0,
+                  builder: (anim) => Transform.scale(
+                      scale: anim.value,
+                      child: Icon(
+                        Icons.favorite,
+                        size: 80,
+                        color: Theme.of(context).primaryColor,
+                      )),
+                )
+              : Text('')
+        ],
       ),
     );
   }
@@ -132,9 +188,9 @@ class _PostState extends State<Post> {
               padding: EdgeInsets.only(top: 40, left: 20),
             ),
             GestureDetector(
-                onTap: () => print('has liked'),
+                onTap: handleLike,
                 child: Icon(
-                  Icons.favorite_border,
+                  isLiked ? Icons.favorite : Icons.favorite_border,
                   size: 28,
                   color: Theme.of(context).primaryColor,
                 )),
@@ -179,6 +235,8 @@ class _PostState extends State<Post> {
 
   @override
   Widget build(BuildContext context) {
+    isLiked = (likes['currentUserId'] == true);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
