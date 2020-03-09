@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peach/models/user.dart';
 import 'package:peach/screens/home.dart';
-import 'package:peach/screens/profile.dart';
 import 'package:peach/widgets/loading.dart';
 import 'package:peach/widgets/textField.dart';
 
@@ -53,7 +52,7 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
-  updateProfileData() async {
+  updateProfileData() {
     setState(() {
       nameController.text.trim().length < 3 || nameController.text.isEmpty
           ? _nameValid = false
@@ -74,12 +73,8 @@ class _EditProfileState extends State<EditProfile> {
       });
       SnackBar snackbar = SnackBar(content: Text("Success, profile updated"));
       _scaffoldKey.currentState.showSnackBar(snackbar);
-      await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Profile(
-                    profileId: currentUser.id,
-                  )));
+      Navigator.pop(context);
+      //TODO Fix needed: Show updated version of profile
     }
   }
 
