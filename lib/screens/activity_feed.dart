@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peach/screens/home.dart';
+import 'package:peach/screens/post_screen.dart';
 import 'package:peach/widgets/header.dart';
 import 'package:peach/widgets/loading.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -51,6 +52,7 @@ String activityItemText;
 class ActivityFeedItem extends StatelessWidget {
   final String username;
   final String userId;
+  final String postUserId;
   final String type;
   final String mediaUrl;
   final String postId;
@@ -61,6 +63,7 @@ class ActivityFeedItem extends StatelessWidget {
   ActivityFeedItem(
       {this.username,
       this.userId,
+      this.postUserId,
       this.type,
       this.mediaUrl,
       this.postId,
@@ -71,7 +74,8 @@ class ActivityFeedItem extends StatelessWidget {
   factory ActivityFeedItem.fromDocument(DocumentSnapshot doc) {
     return ActivityFeedItem(
         username: doc['username'],
-        userId: doc['userid'],
+        userId: doc['userId'],
+        postUserId: currentUser.id,
         type: doc['type'],
         postId: doc['postId'],
         userProfileImg: doc['userProfileImg'],
@@ -80,11 +84,22 @@ class ActivityFeedItem extends StatelessWidget {
         mediaUrl: doc['mediaUrl']);
   }
 
-  configMediaPreview() {
+  showPost(context) {
+    print(userId);
+    print(postId);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PostScreen(
+                  userId: userId,
+                  postId: postId,
+                )));
+  }
+
+  configMediaPreview(context) {
     if (type == 'like' || type == 'comment') {
       mediaPreview = GestureDetector(
-        //TODO show full post
-        onTap: () => print('show post'),
+        onTap: () => showPost(context),
         child: Container(
           height: 50,
           width: 50,
@@ -116,7 +131,7 @@ class ActivityFeedItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    configMediaPreview();
+    configMediaPreview(context);
     return Padding(
       padding: EdgeInsets.only(bottom: 2.0),
       child: Container(
