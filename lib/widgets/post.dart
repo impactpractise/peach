@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peach/models/user.dart';
+import 'package:peach/screens/activity_feed.dart';
 import 'package:peach/screens/comments.dart';
 import 'package:peach/screens/home.dart';
 import 'package:peach/widgets/custom_image.dart';
@@ -101,7 +102,7 @@ class _PostState extends State<Post> {
             backgroundColor: Colors.blueGrey,
           ),
           title: GestureDetector(
-            onTap: () => print('showing profile'),
+            onTap: () => showUserProfile(context, profileId: user.id),
             child: Text(
               user.username,
               style:
