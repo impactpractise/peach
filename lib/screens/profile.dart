@@ -21,6 +21,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   String profileToggleBar = 'grid';
   final String currentUserId = currentUser?.id;
+  String user;
   bool isLoading = false;
   int postCount = 0;
   List<Post> posts = [];
@@ -104,6 +105,8 @@ class _ProfileState extends State<Profile> {
     bool isProfileOwner = currentUserId == widget.profileId;
     if (isProfileOwner) {
       return buildButton(text: 'Edit Profile', function: editProfile);
+    } else {
+      return Text('button');
     }
   }
 
@@ -218,6 +221,7 @@ class _ProfileState extends State<Profile> {
       appBar: header(
         context,
         titleText: currentUser.username,
+        //TODO show profile owners username
         removeBackButton: false,
       ),
       body: ListView(children: <Widget>[

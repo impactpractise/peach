@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peach/screens/home.dart';
 import 'package:peach/screens/post_screen.dart';
+import 'package:peach/screens/profile.dart';
 import 'package:peach/widgets/header.dart';
 import 'package:peach/widgets/loading.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -138,7 +139,7 @@ class ActivityFeedItem extends StatelessWidget {
         color: Colors.white54,
         child: ListTile(
           title: GestureDetector(
-            onTap: () => print('show profile'),
+            onTap: () => showUserProfile(context, profileId: userId),
             child: RichText(
               overflow: TextOverflow.ellipsis,
               text: TextSpan(
@@ -170,4 +171,9 @@ class ActivityFeedItem extends StatelessWidget {
       ),
     );
   }
+}
+
+showUserProfile(BuildContext context, {String profileId}) {
+  Navigator.push(context,
+      MaterialPageRoute(builder: (context) => Profile(profileId: profileId)));
 }
