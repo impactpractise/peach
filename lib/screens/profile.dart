@@ -97,7 +97,7 @@ class _ProfileState extends State<Profile> {
                   ? Colors.white
                   : Theme.of(context).secondaryHeaderColor,
               border: isFollowing
-                  ? Colors.grey
+                  ? Border.all(color: Colors.black)
                   : Border.all(color: Theme.of(context).secondaryHeaderColor),
               borderRadius: BorderRadius.circular(5)),
         ),
@@ -117,7 +117,44 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  handleUnfollowUser() {}
+  handleUnfollowUser() {
+    setState(() {
+      isFollowing = false;
+    });
+    // Make auth user unfollow of a user
+    followersRef
+        .document(widget.profileId)
+        .collection('userFollowers')
+        .document(currentUserId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    // Remove user from auth user following collection
+    followingRef
+        .document(currentUserId)
+        .collection('userFollowing')
+        .document(widget.profileId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    // delete activity feed item about new follower
+    activityFeedRef
+        .document(widget.profileId)
+        .collection('feedItems')
+        .document(currentUserId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+  }
 
   handleFollowUser() {
     setState(() {
