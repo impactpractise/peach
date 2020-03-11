@@ -119,7 +119,36 @@ class _ProfileState extends State<Profile> {
 
   handleUnfollowUser() {}
 
-  handleFollowUser() {}
+  handleFollowUser() {
+    setState(() {
+      isFollowing = true;
+    });
+    // Make auth user follower of a user
+    followersRef
+        .document(widget.profileId)
+        .collection('userFollowers')
+        .document(currentUserId)
+        .setData({});
+    // Add user on to auth user following collection
+    followingRef
+        .document(currentUserId)
+        .collection('userFollowing')
+        .document(widget.profileId)
+        .setData({});
+    // notify user about new follower
+    activityFeedRef
+        .document(widget.profileId)
+        .collection('feedItems')
+        .document(currentUserId)
+        .setData({
+      "type": "follow",
+      "ownerId": widget.profileId,
+      "username": currentUser.username,
+      "userId": currentUserId,
+      "userProfileImg": currentUser.photoUrl,
+      "timestamp": timestamp
+    });
+  }
 
   buildProfileHeader() {
     return FutureBuilder(
