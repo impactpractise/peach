@@ -111,6 +111,7 @@ class _PostState extends State<Post> {
           ),
           subtitle: Text(location),
           trailing: IconButton(
+              //TODO add delete function
               onPressed: () => print('deleting post..'),
               icon: Icon(
                 Icons.more_vert,
