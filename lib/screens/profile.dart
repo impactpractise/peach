@@ -19,6 +19,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  bool isFollowing = false;
   String profileToggleBar = 'grid';
   final String currentUserId = currentUser?.id;
   String user;
@@ -85,15 +86,19 @@ class _ProfileState extends State<Profile> {
           child: Text(
             text,
             style: TextStyle(
-                color: Theme.of(context).secondaryHeaderColor,
+                color: isFollowing ? Colors.black : Colors.white,
                 fontWeight: FontWeight.bold),
           ),
           width: double.infinity,
           height: 30,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Theme.of(context).secondaryHeaderColor),
+              color: isFollowing
+                  ? Colors.white
+                  : Theme.of(context).secondaryHeaderColor,
+              border: isFollowing
+                  ? Border.all(color: Colors.black)
+                  : Border.all(color: Theme.of(context).secondaryHeaderColor),
               borderRadius: BorderRadius.circular(5)),
         ),
       ),
@@ -105,9 +110,81 @@ class _ProfileState extends State<Profile> {
     bool isProfileOwner = currentUserId == widget.profileId;
     if (isProfileOwner) {
       return buildButton(text: 'Edit Profile', function: editProfile);
-    } else {
-      return Text('button');
+    } else if (isFollowing) {
+      return buildButton(text: 'Unfollow', function: handleUnfollowUser);
+    } else if (!isFollowing) {
+      return buildButton(text: 'Follow', function: handleFollowUser);
     }
+  }
+
+  handleUnfollowUser() {
+    setState(() {
+      isFollowing = false;
+    });
+    // Make auth user unfollow of a user
+    followersRef
+        .document(widget.profileId)
+        .collection('userFollowers')
+        .document(currentUserId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    // Remove user from auth user following collection
+    followingRef
+        .document(currentUserId)
+        .collection('userFollowing')
+        .document(widget.profileId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    // delete activity feed item about new follower
+    activityFeedRef
+        .document(widget.profileId)
+        .collection('feedItems')
+        .document(currentUserId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+  }
+
+  handleFollowUser() {
+    setState(() {
+      isFollowing = true;
+    });
+    // Make auth user follower of a user
+    followersRef
+        .document(widget.profileId)
+        .collection('userFollowers')
+        .document(currentUserId)
+        .setData({});
+    // Add user on to auth user following collection
+    followingRef
+        .document(currentUserId)
+        .collection('userFollowing')
+        .document(widget.profileId)
+        .setData({});
+    // notify user about new follower
+    activityFeedRef
+        .document(widget.profileId)
+        .collection('feedItems')
+        .document(currentUserId)
+        .setData({
+      "type": "follow",
+      "ownerId": widget.profileId,
+      "username": currentUser.username,
+      "userId": currentUserId,
+      "userProfileImg": currentUser.photoUrl,
+      "timestamp": timestamp
+    });
   }
 
   buildProfileHeader() {
