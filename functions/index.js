@@ -66,3 +66,30 @@ exports.onDeleteFollower = functions.firestore
         })
       })
 
+// When post is created, add post to timeline post owner's followers
+exports.onCreatePost = functions.firestore
+    .document('/posts/{userId}/userPosts/{postId}')
+    .onCreate(async (snapshot, context) => {
+    const postCreated = snapshot.data();
+    const userId = context.params.userId;
+    const postId = context.params.postId;
+
+    // 1. get all followers of post owner
+    const userFollowersRef = admin.firestore().collection('followers').doc(userId).collection('userFollowers');
+
+    const querySnapshot = await userFollowersRef.get();
+    // 2. add new post to followers timeline
+    querySnapshot.forEach(doc => {
+    const followerId = doc.id;
+
+    admin.firestore()
+        .collection('timeline')
+        .doc(followerId)
+        .collection('timelinePosts')
+        .doc(postId)
+        .set(postCreated);
+    });
+   });
+
+
+
