@@ -91,5 +91,26 @@ exports.onCreatePost = functions.firestore
     });
    });
 
+exports.onUpdatePost = functions.firestore.document('/posts/{userId}/userPosts/{postId}').onUpdate(async (change, context) => {
+    const postUpdated = change.after.data();
+    const userId = context.params.userId;
+    const postId = context.params.postId;
 
+    const userFollowersRef = admin.firestore()
+        .collection('followers')
+        .doc(userId)
+        .collection('userFollowers');
+
+    const querySnapshot = await userFollowersRef.get();
+
+    querySnapshot.forEach(doc => {
+    const followerId = doc.id;
+
+    admin.firestore().collection('timeline').doc(followerId).collection('timelinePosts').doc(postId).get().then(doc => {
+        if(doc.exists){
+            doc.ref.update(postUpdated);
+        }
+        });
+    });
+});
 
