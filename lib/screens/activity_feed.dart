@@ -159,8 +159,11 @@ class ActivityFeedItem extends StatelessWidget {
                   ]),
             ),
           ),
-          leading: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(userProfileImg),
+          leading: GestureDetector(
+            onTap: () => showUserProfile(context, profileId: userId),
+            child: CircleAvatar(
+              backgroundImage: CachedNetworkImageProvider(userProfileImg),
+            ),
           ),
           subtitle: Text(
             timeago.format(timestamp.toDate()),

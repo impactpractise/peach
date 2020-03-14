@@ -12,7 +12,6 @@ import 'package:peach/widgets/custom_image.dart';
 import 'package:peach/widgets/loading.dart';
 
 class Post extends StatefulWidget {
-  final String currentUserId = currentUser?.id;
   final String postId;
   final String ownerId;
   final String username;
@@ -67,6 +66,7 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
+  final String currentUserId = currentUser?.id;
   final String postId;
   final String ownerId;
   final String username;
@@ -96,10 +96,14 @@ class _PostState extends State<Post> {
           return circularProgress(context);
         }
         User user = User.fromDocument(snapshot.data);
+        bool isPostOwner = currentUserId == ownerId;
         return ListTile(
-          leading: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(user.photoUrl),
-            backgroundColor: Colors.blueGrey,
+          leading: GestureDetector(
+            onTap: () => showUserProfile(context, profileId: user.id),
+            child: CircleAvatar(
+              backgroundImage: CachedNetworkImageProvider(user.photoUrl),
+              backgroundColor: Colors.blueGrey,
+            ),
           ),
           title: GestureDetector(
             onTap: () => showUserProfile(context, profileId: user.id),
@@ -110,15 +114,80 @@ class _PostState extends State<Post> {
             ),
           ),
           subtitle: Text(location),
-          trailing: IconButton(
-              //TODO add delete function
-              onPressed: () => print('deleting post..'),
-              icon: Icon(
-                Icons.more_vert,
-              )),
+          trailing: isPostOwner
+              ? IconButton(
+                  onPressed: () => handleDeletePost(context),
+                  icon: Icon(
+                    Icons.more_vert,
+                  ))
+              : Text(''),
         );
       },
     );
+  }
+
+  handleDeletePost(BuildContext parentContext) {
+    return showDialog(
+        context: parentContext,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text('Delete this post?'),
+            children: <Widget>[
+              SimpleDialogOption(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    deletePost();
+                  },
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  )),
+              SimpleDialogOption(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              )
+            ],
+          );
+        });
+  }
+
+  // To delete a post, ownerId and currentUserId MUST be equal
+  deletePost() async {
+    // delete post
+    postsRef
+        .document(ownerId)
+        .collection('userPosts')
+        .document(postId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    // delete uploaded image of post
+    storageRef.child("post_$postId.jpg").delete();
+    // delete activity feed notifications
+    QuerySnapshot activityFeedSnapshot = await activityFeedRef
+        .document(ownerId)
+        .collection("feedItems")
+        .where('postId', isEqualTo: postId)
+        .getDocuments();
+
+    activityFeedSnapshot.documents.forEach((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    // delete comments
+    QuerySnapshot commentsSnapshot = await commentsRef
+        .document(postId)
+        .collection('comments')
+        .getDocuments();
+    commentsSnapshot.documents.forEach((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
   }
 
   handleLike() {
@@ -220,58 +289,61 @@ class _PostState extends State<Post> {
   }
 
   buildPostFooter() {
-    return Column(
-      children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 40, left: 20),
-            ),
-            GestureDetector(
-                onTap: handleLike,
-                child: Icon(
-                  isLiked ? Icons.favorite : Icons.favorite_border,
-                  size: 28,
-                  color: Theme.of(context).primaryColor,
-                )),
-            Padding(padding: EdgeInsets.only(right: 20)),
-            GestureDetector(
-                onTap: () => showComments(context,
-                    postId: postId, ownerId: ownerId, mediaUrl: mediaUrl),
-                child: Icon(Icons.chat,
-                    size: 28, color: Theme.of(context).secondaryHeaderColor))
-          ],
-        ),
-        Row(
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(left: 20),
-              child: Text(
-                '$likesCount likes',
-                style: TextStyle(
-                    color: Colors.black87, fontWeight: FontWeight.bold),
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              GestureDetector(
+                  onTap: handleLike,
+                  child: Icon(
+                    isLiked ? Icons.favorite : Icons.favorite_border,
+                    size: 25,
+                    color: Theme.of(context).primaryColor,
+                  )),
+              Padding(padding: EdgeInsets.only(right: 16, top: 5, bottom: 5)),
+              GestureDetector(
+                  onTap: () => showComments(context,
+                      postId: postId, ownerId: ownerId, mediaUrl: mediaUrl),
+                  child: Icon(Icons.chat,
+                      size: 25, color: Theme.of(context).secondaryHeaderColor))
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Container(
+                child: Text(
+                  '$likesCount likes',
+                  style: TextStyle(
+                      color: Colors.black87, fontWeight: FontWeight.bold),
+                ),
+              )
+            ],
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(top: 5, bottom: 5),
+                child: Text(
+                  '$username',
+                  style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900),
+                ),
               ),
-            )
-          ],
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(left: 20, right: 5),
-              child: Text(
-                '$username',
-                style: TextStyle(
-                    color: Colors.black87, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Expanded(
-              child: Text(description),
-            )
-          ],
-        )
-      ],
+            ],
+          ),
+          Text(
+            description,
+            style: TextStyle(fontSize: 14),
+          ),
+        ],
+      ),
     );
   }
 
@@ -291,7 +363,10 @@ class _PostState extends State<Post> {
 }
 
 showComments(BuildContext context,
-    {String postId, String ownerId, String mediaUrl}) {
+    //TODO format long captions correctly.
+    {String postId,
+    String ownerId,
+    String mediaUrl}) {
   Navigator.push(context, MaterialPageRoute(builder: (context) {
     return Comments(
         postId: postId, postOwnerId: ownerId, postMediaUrl: mediaUrl);

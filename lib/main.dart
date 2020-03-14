@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Color(0xFFFF2660),
           accentColor: Color(0xFFFA6900),
-          secondaryHeaderColor: Color(0xFF41EAD4)),
+          secondaryHeaderColor: Color(0xFF37AC9F)),
       home: Home(),
     );
   }
