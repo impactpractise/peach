@@ -108,9 +108,39 @@ exports.onUpdatePost = functions.firestore.document('/posts/{userId}/userPosts/{
 
     admin.firestore().collection('timeline').doc(followerId).collection('timelinePosts').doc(postId).get().then(doc => {
         if(doc.exists){
-            doc.ref.update(postUpdated);
-        }
-        });
+            return doc.ref.update(postUpdated);
+        } else {
+        throw new Error('Error on post update.')}
+        }).catch(error => {return error;});
+    });
+});
+
+exports.onDeletePost = functions.firestore
+    .document('/posts/{userId}/userPosts/{postId}')
+    .onDelete(async (snapshot, context) => {
+        const userId = params.context.userid;
+        const postId = params.context.postId;
+
+        // 1. get all followers of post owner
+        const userFollowersRef = admin
+            .firestore()
+            .collection('followers')
+            .doc(userId)
+            .collection('userFollowers');
+
+        const querySnapshot = await userFollowersRef.get();
+        // 2. Delete post in followers timeline
+
+        querySnapshot.forEach(doc => {
+            const followerId = doc.id;
+
+            admin.firestore().collection('timeline').doc(followerId).collection('timelinePosts').doc(postId).get().then(doc => {
+            if(doc.exists){
+                return doc.ref.delete();
+            } else {
+            throw new Error("Error on post deletion");
+            }
+        }).catch(error => {return error;});
     });
 });
 
