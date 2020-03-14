@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:peach/models/user.dart';
 import 'package:peach/screens/activity_feed.dart';
+import 'package:peach/screens/explore.dart';
 import 'package:peach/screens/profile.dart';
 import 'package:peach/screens/search.dart';
 import 'package:peach/screens/upload.dart';
@@ -19,6 +20,7 @@ final commentsRef = Firestore.instance.collection('comments');
 final activityFeedRef = Firestore.instance.collection('feed');
 final followersRef = Firestore.instance.collection('followers');
 final followingRef = Firestore.instance.collection('following');
+final timelineRef = Firestore.instance.collection('timeline');
 
 final DateTime timestamp = DateTime.now();
 User currentUser;
@@ -121,11 +123,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
         body: PageView(
           children: <Widget>[
-            //Explore(),
-            RaisedButton(
-              child: Text('Logout'),
-              onPressed: logout,
-            ),
+            Explore(currentUser: currentUser),
             ActivityFeed(),
             Upload(currentUser: currentUser),
             Search(),

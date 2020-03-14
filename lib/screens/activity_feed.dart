@@ -86,8 +86,6 @@ class ActivityFeedItem extends StatelessWidget {
   }
 
   showPost(context) {
-    print(userId);
-    print(postId);
     Navigator.push(
         context,
         MaterialPageRoute(
