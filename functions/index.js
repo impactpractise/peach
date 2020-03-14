@@ -116,31 +116,36 @@ exports.onUpdatePost = functions.firestore.document('/posts/{userId}/userPosts/{
 });
 
 exports.onDeletePost = functions.firestore
-    .document('/posts/{userId}/userPosts/{postId}')
-    .onDelete(async (snapshot, context) => {
-        const userId = params.context.userid;
-        const postId = params.context.postId;
+  .document("/posts/{userId}/userPosts/{postId}")
+  .onDelete(async (snapshot, context) => {
+    const userId = context.params.userId;
+    const postId = context.params.postId;
 
-        // 1. get all followers of post owner
-        const userFollowersRef = admin
-            .firestore()
-            .collection('followers')
-            .doc(userId)
-            .collection('userFollowers');
+    // 1) get all followers of post owner
+    const userFollowersRef = admin
+      .firestore()
+      .collection("followers")
+      .doc(userId)
+      .collection("userFollowers");
 
-        const querySnapshot = await userFollowersRef.get();
-        // 2. Delete post in followers timeline
+    const querySnapshot = await userFollowersRef.get();
+    // 2)  Delete post in each followers timeline
+    querySnapshot.forEach(doc => {
+      const followerId = doc.id;
 
-        querySnapshot.forEach(doc => {
-            const followerId = doc.id;
-
-            admin.firestore().collection('timeline').doc(followerId).collection('timelinePosts').doc(postId).get().then(doc => {
-            if(doc.exists){
-                return doc.ref.delete();
-            } else {
-            throw new Error("Error on post deletion");
-            }
+      admin
+        .firestore()
+        .collection("timeline")
+        .doc(followerId)
+        .collection("timelinePosts")
+        .doc(postId)
+        .get()
+        .then(doc => {
+          if (doc.exists) {
+            return doc.ref.delete();
+          } else {
+          throw new Error('Error deleting post from timeline');
+          }
         }).catch(error => {return error;});
     });
-});
-
+  });
