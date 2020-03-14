@@ -7,6 +7,9 @@ AppBar header(
   removeBackButton = false,
 }) {
   return AppBar(
+      iconTheme: IconThemeData(
+        color: Colors.black, //change your color here
+      ),
       automaticallyImplyLeading: removeBackButton ? false : true,
       backgroundColor: Colors.transparent,
       elevation: 0,
