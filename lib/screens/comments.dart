@@ -64,8 +64,10 @@ class CommentsState extends State<Comments> {
       "avatarUrl": currentUser.photoUrl,
       "userId": currentUser.id
     });
+    bool isNotEmpty = commentController.text.isEmpty ? false : true;
     bool isNotPostOwner = postOwnerId != currentUser.id;
-    if (isNotPostOwner) {
+    //TODO add validation to prevent empty posts
+    if (isNotPostOwner && isNotEmpty) {
       activityFeedRef.document(postOwnerId).collection('feedItems').add({
         "type": "comment",
         "commentData": commentController.text,

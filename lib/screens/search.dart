@@ -46,6 +46,7 @@ class _SearchState extends State<Search> {
           ),
           suffixIcon: IconButton(
               icon: Icon(
+                //TODO remove focus when cleared
                 Icons.clear,
               ),
               onPressed: () => clearSearch()),
