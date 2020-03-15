@@ -30,7 +30,8 @@ class PostScreen extends StatelessWidget {
               children: <Widget>[
                 Container(
                   child: post,
-                )
+                ),
+                //TODO add comments to post
               ],
             ),
           ));
