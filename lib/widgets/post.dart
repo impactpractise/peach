@@ -116,6 +116,7 @@ class _PostState extends State<Post> {
           subtitle: Text(location),
           trailing: isPostOwner
               ? IconButton(
+                  //TODO: Refresh state after delete.
                   onPressed: () => handleDeletePost(context),
                   icon: Icon(
                     Icons.more_vert,
