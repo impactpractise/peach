@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
 class PostDescription extends StatelessWidget {
+  String username;
+  String description;
+  int comments;
+
+  PostDescription({this.username, this.description, this.comments});
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -12,9 +17,9 @@ class PostDescription extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('@username', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('Post description and stuff'),
-            Text('See 15 more comments here',
+            Text(username, style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(description),
+            Text('See $comments more comments here',
                 style: TextStyle(color: Theme.of(context).secondaryHeaderColor))
           ]),
     ));

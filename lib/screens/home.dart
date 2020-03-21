@@ -131,7 +131,7 @@ class _HomeState extends State<Home> {
         body: PageView(
           children: <Widget>[
             //Explore(currentUser: currentUser),
-            NewExplore(),
+            NewExplore(currentUser: currentUser),
             ActivityFeed(),
             Upload(currentUser: currentUser),
             Search(),

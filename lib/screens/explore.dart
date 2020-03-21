@@ -7,8 +7,6 @@ import 'package:peach/widgets/header.dart';
 import 'package:peach/widgets/loading.dart';
 import 'package:peach/widgets/post.dart';
 
-final usersRef = Firestore.instance.collection('users');
-
 class Explore extends StatefulWidget {
   final User currentUser;
 
@@ -39,6 +37,7 @@ class _ExploreState extends State<Explore> {
     setState(() {
       this.posts = posts;
       print(currentUser);
+      print(posts);
     });
   }
 
