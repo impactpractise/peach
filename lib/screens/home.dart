@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:peach/models/user.dart';
 import 'package:peach/screens/activity_feed.dart';
-import 'package:peach/screens/explore.dart';
+import 'package:peach/screens/new_explore.dart';
 import 'package:peach/screens/profile.dart';
 import 'package:peach/screens/search.dart';
 import 'package:peach/screens/upload.dart';
@@ -130,7 +130,8 @@ class _HomeState extends State<Home> {
     return Scaffold(
         body: PageView(
           children: <Widget>[
-            Explore(currentUser: currentUser),
+            //Explore(currentUser: currentUser),
+            NewExplore(),
             ActivityFeed(),
             Upload(currentUser: currentUser),
             Search(),
