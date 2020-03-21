@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peach/widgets/post_description.dart';
 
 class NewExplore extends StatefulWidget {
   @override
@@ -10,22 +11,6 @@ class _NewExploreState extends State<NewExplore> {
         height: 100.0,
         color: Colors.yellow[300],
       );
-
-  Widget get postDescription => Expanded(
-          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        Container(
-            height: 10,
-            color: Colors.green[300],
-            margin: EdgeInsets.only(top: 10)),
-        Container(
-            height: 10,
-            color: Colors.green[300],
-            margin: EdgeInsets.only(top: 10)),
-        Container(
-            height: 10,
-            color: Colors.green[300],
-            margin: EdgeInsets.only(top: 10))
-      ]));
 
   Widget get actionsToolbar => Container(
         width: 100,
@@ -47,7 +32,7 @@ class _NewExploreState extends State<NewExplore> {
         child: Row(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[postDescription, actionsToolbar],
+          children: <Widget>[PostDescription(), actionsToolbar],
         ),
       );
 
