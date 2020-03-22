@@ -42,5 +42,15 @@ flutter:
       - family: Signatra
         fonts:
           - asset: assets/fonts/Signatra.ttf
+      - family: Poppins
+        fonts:
+          - asset: assets/fonts/Poppins-Regular.ttf
+            weight: 400
+      - family: Avenir
+        fonts:
+          - asset: assets/fonts/AvenirLTStd-Book.otf
+          - asset: assets/fonts/AvenirLTStd-Medium.otf
+          - asset: assets/fonts/AvenirLTstd-Roman.otf
+
     assets:
       - assets/images/
